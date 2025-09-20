@@ -1,0 +1,27 @@
+repos:
+  # uv specififc hooks.
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.8.19
+    hooks:
+      - id: uv-lock
+
+  #Ruff for linting and formatting.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.13.1
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        types_or: [ python, pyi ] # Exclude jupyter notebooks for now.
+
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi ] # Exclude jupyter notebooks for now.
+  
+   # Pyright for type checking
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.405
+    hooks:
+      - id: pyright
+        args: ["--project", "server/pyproject.toml"] # Path to config file for pyright
