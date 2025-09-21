@@ -17,7 +17,7 @@ dev = [
 
 [tool.pyright]
 include = ["."] 
-exclude = [".venv", "__pycache__", "*.pyc"]
+exclude = [".venv", "__pycache__", "*.pyc", ".ruff_cache"]
 pythonVersion = "3.13"
 venvPath = "."
 venv = ".venv" 
