@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Providers } from "../providers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -25,17 +26,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <main
-          style={{
-            overflowX: "hidden",
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "#1a0202ff",
-          }}
-        >
-          {children}
-        </main>
+        <Providers>
+          <main
+            style={{
+              overflowX: "hidden",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "#1a0202ff",
+            }}
+          >
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

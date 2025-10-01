@@ -23,7 +23,9 @@
       "@nndm/app/*": ["./src/app/*"],
       "@nndm/features/*": ["./src/features/*"],
       "@nndm/ui/*": ["./src/ui/*"],
-      "@nndm/lib/*": ["./src/lib/*"]
+      "@nndm/lib/*": ["./src/lib/*"],
+      "@nndm/api/*": ["./src/api/*"]
+      
     },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -6,6 +6,14 @@ First, run the development server:
 pnpm dev
 ```
 
+To generate open api types based on backend run:
+
+```bash
+pnpm generate-types
+```
+
+
+
 ## Fonts
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
