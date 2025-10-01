@@ -1,4 +1,10 @@
-## Start the server:
+## First, run the frotnend server
+
+```bash
+pnpm dev
+```
+
+## Start the backend server:
 ```bash
  uv run fastapi dev main.py 
 ```
