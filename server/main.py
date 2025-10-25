@@ -1,8 +1,15 @@
+from os import getenv
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pinecone import IndexEmbed, Pinecone, ServerlessSpec
+
+from .services.vector_store import PineconeService
+
+load_dotenv()
 
 app = FastAPI()
-
 app.add_middleware(
   CORSMiddleware,
   allow_origins=["http://localhost:3000"],
@@ -10,6 +17,8 @@ app.add_middleware(
   allow_methods=["*"],
   allow_headers=["*"],
 )
+
+pinecone_service = PineconeService()
 
 
 @app.get("/")

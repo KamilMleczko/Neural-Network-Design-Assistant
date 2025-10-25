@@ -6,11 +6,19 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.116.2",
+    "fastparquet>=2024.11.0",
+    "kagglehub>=0.3.13",
+    "langchain>=0.3.27",
+    "langchain-community>=0.3.31",
+    "pandas>=2.3.3",
+    "pinecone>=7.3.0",
     "pre-commit>=4.3.0",
+    "tqdm>=4.67.1",
 ]
 
 [dependency-groups]
 dev = [
+    "ipykernel>=7.0.1",
     "pyright>=1.1.405",
     "ruff>=0.13.1",
 ]
