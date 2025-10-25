@@ -36,7 +36,9 @@ exclude = [
     "site-packages",
     "venv",
 ]
-
+extend-exclude = [
+    "*.ipynb", # Ignores all files ending in .ipynb
+]
 line-length = 100
 indent-width = 2
 
@@ -138,4 +140,14 @@ ignore = [
     "TRY003", # Tryceratops - Checks for long exception messages that are not defined in the exception class itself.
     "EM101", # Flake8-errmsg - Checks for the use of string literals in exception constructors.
     "COM812",
+    "BLE001", # blind exception
+    "PLR0913", #  Too many arguments in function definition
+    "D415", # First line should end with a period, question mark, or exclamation point
+    "D400", # First line should end witha  period
+    "B006",
+    "D200",
+    "E402",
+    "I001",
+
+
 ]
