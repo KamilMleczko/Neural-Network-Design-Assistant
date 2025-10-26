@@ -3,7 +3,7 @@ from pathlib import Path
 
 server_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(server_root))
-from services.vector_store import PineconeService
+from services.pinecone_service import PineconeService
 import pandas as pd
 
 
