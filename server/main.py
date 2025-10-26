@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pinecone import IndexEmbed, Pinecone, ServerlessSpec
 
-from .services.vector_store import PineconeService
+from .services.pinecone_service import PineconeService
 
 load_dotenv()
 
