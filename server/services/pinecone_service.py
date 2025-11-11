@@ -1,9 +1,14 @@
-import os
-from typing import Literal
+import sys
+from pathlib import Path
 
+server_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(server_root))
+import os
+from typing import Literal, cast
 import pandas as pd
 from dotenv import load_dotenv
-from pinecone import Pinecone, SearchQuery, ServerlessSpec
+from pinecone import Pinecone, SearchQuery
+from services.scientific_pdf_loader import ScientificPDFLoader
 
 # Load environment variables
 load_dotenv()
@@ -23,9 +28,9 @@ class PineconeService:
   def upsert_dataframe_to_pinecone(
     self,
     df: pd.DataFrame,
+    namespace: str,
     index_name: Literal["nndm-dense", "nndm-sparse"],
     col_to_embed: str,
-    namespace: str = "__base_knowledge__",
     batch_size: int = 250,
     cols_as_metadata: list[str] = [
       "arxiv_id",
@@ -41,9 +46,9 @@ class PineconeService:
 
     Args:
         df: DataFrame containing data to upsert.
+        namespace: Pinecone namespace to upsert into (e.g., "__abstracts__" or "__chunks__").
         index_name: Name of the Pinecone index to upsert to ("nndm-dense" or "nndm-sparse").
         col_to_embed: Column name in DataFrame containing text to embed.
-        namespace: Pinecone namespace to use. Defaults to "__base_knowledge__".
         batch_size: Number of rows to upsert in each batch. Defaults to 250.
         cols_as_metadata: List of column names to include as metadata. Defaults to [].
 
@@ -65,7 +70,6 @@ class PineconeService:
             col_to_embed
           ],  # source_text should be named "embedded_text" to match the field_map in index (both indexes have the same field map)
           # everything after those two fields is treated as metadata
-          "type": "abstract",
           **{
             f"{col}": row[col] for col in cols_as_metadata
           },  # use dictionary unpacking to add metadata fields
@@ -84,21 +88,116 @@ class PineconeService:
       except Exception as e:
         print(f"Error upserting rows {start_idx} to {end_idx} into Pinecone dense index: {e}")
 
+  def upsert_chunked_pdfs(
+    self,
+    df: pd.DataFrame,
+    namespace: str,
+    batch_size: int = 250,
+  ) -> None:
+    """
+    Processes PDFs from DataFrame, chunks them, and upserts chunks to Pinecone dense index on-the-fly.
+
+    Args:
+        df: DataFrame with columns: arxiv_id, title, article_url
+        namespace: Pinecone namespace to upsert into (e.g., "__chunks__")
+        batch_size: Number of chunks to upsert in each batch
+        cols_as_metadata: List of column names to include as metadata
+
+    Returns:
+        None
+
+    """
+    # Initialize parser and chunker
+    parser = ScientificPDFLoader(extract_tables=True)
+
+    total_pdfs = len(df)
+    total_chunks_processed = 0
+    total_pdfs_processed = 0
+    total_pdfs_failed = 0
+
+    # Batch accumulator
+    batch_vectors = []
+
+    print(f"📊 Processing {total_pdfs} PDFs and upserting chunks to Pinecone...")
+    try:
+      for _idx, row in df.iterrows():
+        arxiv_id = row["arxiv_id"]
+        article_title = row["title"]
+        pdf_url = cast("str", row["article_url"])
+
+        print(f"Processing: {arxiv_id}")
+        print(f"  Title: {article_title[:80]}...")
+
+        chunks = parser.parse_pdf(pdf_url)
+
+        print(f" ✅ Created {len(chunks)} chunks")
+
+        # Process each chunk
+        for chunk_num, chunk in enumerate(chunks):
+          clean_text = chunk["content"].strip().replace("\n", " ")
+
+          # Create vector for this chunk
+          vector = {
+            "id": f"{arxiv_id}_{chunk_num}",
+            "embedded_text": clean_text,  # The actual text to embed
+            "arxiv_id": arxiv_id,
+            "article_title": article_title,
+            "section_title": chunk["heading"],
+            "page": chunk["page_number"],
+          }
+
+          batch_vectors.append(vector)
+          total_chunks_processed += 1
+
+          # If batch is full, upsert it
+          if len(batch_vectors) >= batch_size:
+            try:
+              self.index_dense.upsert_records(namespace=namespace, records=batch_vectors)
+              print(f"  ⬆️  Upserted batch of {len(batch_vectors)} chunks to Pinecone")
+            except Exception as e:
+              print(f"  ❌ Error upserting batch to Pinecone: {e}")
+
+            # Clear batch
+            batch_vectors = []
+
+        total_pdfs_processed += 1
+
+    except Exception as e:
+      print(f"  ❌ Error processing PDF: {e}")
+      total_pdfs_failed += 1
+
+    # Upsert any remaining chunks in the final batch
+    if batch_vectors:
+      try:
+        self.index_dense.upsert_records(namespace=namespace, records=batch_vectors)
+        print(f"\n⬆️  Upserted final batch of {len(batch_vectors)} chunks to Pinecone")
+      except Exception as e:
+        print(f"\n❌ Error upserting final batch to Pinecone: {e}")
+
+    # Print summary
+    print("\n" + "=" * 60)
+    print("✅ Processing Complete!")
+    print(f"PDFs successfully processed: {total_pdfs_processed}")
+    print(f"PDFs failed: {total_pdfs_failed}")
+    if total_pdfs_processed > 0:
+      print(f"Average chunks per PDF: {total_chunks_processed / total_pdfs_processed:.1f}")
+
   def _vector_search(
     self,
     search_text: str,
+    namespace: str,
     index_name: Literal["nndm-dense", "nndm-sparse"],
+    filters: dict | None = None,
     limit: int = 10,
-    namespace: str = "__base_knowledge__",
   ):
     """
     Conducts a vector search on the specified Pinecone index (dense or sparse) using the provided search text.
 
     Args:
         search_text: The text to search for.
-        top_k: The number of top results to return. Defaults to 10.
-        namespace: The Pinecone namespace to search within. Defaults to "__base_knowledge__".
+        namespace: The Pinecone namespace to search within (either "__abstracts__" or "__chunks__").
         index_name: The name of the Pinecone index to search ("nndm-dense" or "nndm-sparse"). Defaults to "nndm-dense".
+        filters: Optional filters to apply to the search (in form of json). Defaults to None.
         limit: The number of top results to return. Defaults to 10.
 
     Returns:
@@ -108,12 +207,12 @@ class PineconeService:
     if index_name == "nndm-sparse":
       results = self.index_sparse.search(
         namespace=namespace,
-        query=SearchQuery(inputs={"text": search_text}, top_k=limit),
+        query=SearchQuery(inputs={"text": search_text}, top_k=limit, filter=filters),
       )
     else:
       results = self.index_dense.search(
         namespace=namespace,
-        query=SearchQuery(inputs={"text": search_text}, top_k=limit),
+        query=SearchQuery(inputs={"text": search_text}, top_k=limit, filter=filters),
       )
 
     return results
@@ -151,13 +250,23 @@ class PineconeService:
     )
     return result.data
 
-  def hybrid_search(self, query, candidates=10, limit=5, fields: list[str] | None = None):
+  def hybrid_search(
+    self,
+    query,
+    namespace: str,
+    filters: dict | None = None,
+    candidates=10,
+    limit=5,
+    fields: list[str] | None = None,
+  ):
     """
     Conducts a search over sparse and dense indexes, followed by deduplication and reranking
 
     Args:
         query: The search query string.
+        namespace: The Pinecone namespace to search within( either "__abstracts__" or "__chunks__")
         candidates: The number of top results to retrieve from each index before deduplication. Defaults to 10.
+        filters: Optional filters to apply to the search (in form of json). Defaults to None.
         limit: The number of top results to return after reranking. Defaults to 5.
         fields: List of fields to retrieve from the indexes. If not specified, defaults to all present fields.
 
@@ -165,9 +274,14 @@ class PineconeService:
         list: The final reranked search results.
 
     """
-    dense_results = self._vector_search(query, index_name="nndm-dense", limit=candidates)
-    sparse_results = self._vector_search(query, index_name="nndm-sparse", limit=candidates)
+    dense_results = self._vector_search(
+      query, index_name="nndm-dense", namespace=namespace, limit=candidates, filters=filters
+    )
+    sparse_results = self._vector_search(
+      query, index_name="nndm-sparse", namespace=namespace, limit=candidates, filters=filters
+    )
     # dedupe results
+    print(f"sparse results: {sparse_results}")
     deduped_results = self._deduplicate(sparse_results, dense_results)
     # rerank results
     reranked_results = self._rerank(query, deduped_results, limit=limit)
