@@ -7,12 +7,18 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.116.2",
     "fastparquet>=2024.11.0",
+    "huggingface-hub>=0.36.0",
     "kagglehub>=0.3.13",
     "langchain>=0.3.27",
     "langchain-community>=0.3.31",
+    "langchain-docling>=1.1.0",
+    "langchain-openai>=0.3.35",
+    "langgraph>=1.0.1",
     "pandas>=2.3.3",
     "pinecone>=7.3.0",
     "pre-commit>=4.3.0",
+    "psycopg2-binary>=2.9.11",
+    "pymupdf>=1.26.5",
     "tqdm>=4.67.1",
 ]
 
