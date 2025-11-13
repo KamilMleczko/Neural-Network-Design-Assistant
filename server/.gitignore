@@ -30,3 +30,6 @@ logs/
 
 #ruff/
 .ruff_cache/
+
+# parquet files
+*.parquet
