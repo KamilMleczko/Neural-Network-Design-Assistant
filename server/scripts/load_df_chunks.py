@@ -8,13 +8,14 @@ import pandas as pd
 
 
 def main():
-  df = pd.read_parquet("/home/kamil/repos/nnda/server/notebooks/dataset_v1.parquet.gzip")
-  df_part = df.iloc[0:1]
-  print(f"DataFrame part to upsert:\n{df_part}")
+  df = pd.read_parquet(
+    "/home/kamil/repos/nnda/server/notebooks/arxiv_most_cited_tier_I.parquet.gzip"
+  )
+  print(f"Amount of records to upsert: {len(df)}")
 
   pinecone_service = PineconeService()
 
-  pinecone_service.upsert_chunked_pdfs(df=df_part, namespace="__chunks__", batch_size=96)
+  pinecone_service.upsert_chunked_pdfs(df=df, namespace="__chunks__", batch_size=5)
 
 
 if __name__ == "__main__":

@@ -39,6 +39,7 @@ class PineconeService:
       "article_url",
       "repo_url_list",
       "authors_list",
+      "citations",
     ],
   ) -> None:
     """
@@ -107,20 +108,20 @@ class PineconeService:
         None
 
     """
-    # Initialize parser and chunker
-    parser = ScientificPDFLoader(extract_tables=True)
+    loader = ScientificPDFLoader(extract_tables=True)
 
     total_pdfs = len(df)
     total_chunks_processed = 0
     total_pdfs_processed = 0
     total_pdfs_failed = 0
 
-    # Batch accumulator
     batch_vectors = []
+    failed_records = pd.DataFrame(columns=df.columns)  # Empty DataFrame for failed rows
 
     print(f"📊 Processing {total_pdfs} PDFs and upserting chunks to Pinecone...")
-    try:
-      for _idx, row in df.iterrows():
+
+    for _idx, row in df.iterrows():
+      try:
         arxiv_id = row["arxiv_id"]
         article_title = row["title"]
         pdf_url = cast("str", row["article_url"])
@@ -128,7 +129,7 @@ class PineconeService:
         print(f"Processing: {arxiv_id}")
         print(f"  Title: {article_title[:80]}...")
 
-        chunks = parser.parse_pdf(pdf_url)
+        chunks = loader.parse_pdf(pdf_url)
 
         print(f" ✅ Created {len(chunks)} chunks")
 
@@ -138,8 +139,8 @@ class PineconeService:
 
           # Create vector for this chunk
           vector = {
-            "id": f"{arxiv_id}_{chunk_num}",
-            "embedded_text": clean_text,  # The actual text to embed
+            "id": f"{arxiv_id}-chunk_{chunk_num}",
+            "embedded_text": clean_text,  # Text to embed
             "arxiv_id": arxiv_id,
             "article_title": article_title,
             "section_title": chunk["heading"],
@@ -161,10 +162,12 @@ class PineconeService:
             batch_vectors = []
 
         total_pdfs_processed += 1
-
-    except Exception as e:
-      print(f"  ❌ Error processing PDF: {e}")
-      total_pdfs_failed += 1
+      except Exception as e:
+        print(f"  ❌ Error processing PDF {row.get('arxiv_id', '?')}: {e}")
+        total_pdfs_failed += 1
+        # Append failed record to DataFrame
+        failed_records = pd.concat([failed_records, pd.DataFrame([row])], ignore_index=True)
+        continue  # Move on to next PDF
 
     # Upsert any remaining chunks in the final batch
     if batch_vectors:
@@ -173,6 +176,16 @@ class PineconeService:
         print(f"\n⬆️  Upserted final batch of {len(batch_vectors)} chunks to Pinecone")
       except Exception as e:
         print(f"\n❌ Error upserting final batch to Pinecone: {e}")
+
+    # Save failed records if any
+    if not failed_records.empty:
+      try:
+        failed_records_original = pd.read_parquet("failed_records.parquet")
+        failed_records = pd.concat([failed_records_original, failed_records], ignore_index=True)
+        failed_records.to_parquet("failed_records.parquet", index=False)
+        print(f"\n💾 Saved {len(failed_records)} failed records to 'failed_records.parquet'")
+      except Exception as e:
+        print(f"\n❌ Error saving failed records to Parquet: {e}")
 
     # Print summary
     print("\n" + "=" * 60)

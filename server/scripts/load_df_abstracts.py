@@ -9,27 +9,42 @@ import pandas as pd
 
 def main():
   df = pd.read_parquet(
-    "/home/kamil/repos/nnda/server/notebooks/neural_net_papers_metadata.parquet.gzip"
+    "/home/kamil/repos/nnda/server/notebooks/arxiv_most_cited_tier_I.parquet.gzip"
   )
-  df_part = df.iloc[0:5]
-  print(f"DataFrame part to upsert:\n{df_part}")
+  print(f"Amount of records to upsert: {len(df)}")
 
   pinecone_service = PineconeService()
 
   pinecone_service.upsert_dataframe_to_pinecone(
-    df=df_part,
+    df=df,
     index_name="nndm-dense",
     col_to_embed="abstract",
-    cols_as_metadata=["arxiv_id", "title", "year", "article_url", "repo_url_list", "authors_list"],
+    cols_as_metadata=[
+      "arxiv_id",
+      "title",
+      "year",
+      "article_url",
+      "repo_url_list",
+      "authors_list",
+      "citations",
+    ],
     namespace="__abstracts__",
     batch_size=5,
   )
 
   pinecone_service.upsert_dataframe_to_pinecone(
-    df=df_part,
+    df=df,
     index_name="nndm-sparse",
     col_to_embed="abstract",
-    cols_as_metadata=["arxiv_id", "title", "year", "article_url", "repo_url_list", "authors_list"],
+    cols_as_metadata=[
+      "arxiv_id",
+      "title",
+      "year",
+      "article_url",
+      "repo_url_list",
+      "authors_list",
+      "citations",
+    ],
     namespace="__abstracts__",
     batch_size=5,
   )
