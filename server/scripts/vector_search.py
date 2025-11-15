@@ -1,9 +1,4 @@
-import sys
-from pathlib import Path
-
-server_root = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(server_root))
-from services.pinecone_service import PineconeService
+from ..services.pinecone_service import PineconeService
 
 
 def main():

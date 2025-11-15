@@ -4,7 +4,7 @@ from pathlib import Path
 server_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(server_root))
 import os
-from typing import Literal, cast
+from typing import Any, Literal, cast
 import pandas as pd
 from dotenv import load_dotenv
 from pinecone import Pinecone, SearchQuery
@@ -195,7 +195,7 @@ class PineconeService:
     if total_pdfs_processed > 0:
       print(f"Average chunks per PDF: {total_chunks_processed / total_pdfs_processed:.1f}")
 
-  def _vector_search(
+  def _vector_search_basic(
     self,
     search_text: str,
     namespace: str,
@@ -227,7 +227,6 @@ class PineconeService:
         namespace=namespace,
         query=SearchQuery(inputs={"text": search_text}, top_k=limit, filter=filters),
       )
-
     return results
 
   def _deduplicate(self, sparse_results, dense_results):
@@ -263,9 +262,51 @@ class PineconeService:
     )
     return result.data
 
+  def vector_search(
+    self,
+    search_text: str,
+    namespace: str,
+    index_name: Literal["nndm-dense", "nndm-sparse"],
+    filters: dict | None = None,
+    limit: int = 10,
+    fields: list[str] | None = None,
+  ):
+    """
+    Conducts a vector search on the specified Pinecone index (dense or sparse) using the provided search text.
+
+    Args:
+        search_text: The text to search for.
+        namespace: The Pinecone namespace to search within (either "__abstracts__" or "__chunks__").
+        index_name: The name of the Pinecone index to search ("nndm-dense" or "nndm-sparse"). Defaults to "nndm-dense".
+        filters: Optional filters to apply to the search (in form of json). Defaults to None.
+        limit: The number of top results to return. Defaults to 10.
+        fields: List of fields to retrieve from the index. If not specified, defaults to all present fields.
+
+    Returns:
+        dict: The search results from Pinecone.
+
+    """
+    if index_name == "nndm-sparse":
+      results = self.index_sparse.search(
+        namespace=namespace,
+        query=SearchQuery(inputs={"text": search_text}, top_k=limit, filter=filters),
+      )
+    else:
+      results = self.index_dense.search(
+        namespace=namespace,
+        query=SearchQuery(inputs={"text": search_text}, top_k=limit, filter=filters),
+      )
+    hits = results["result"]["hits"]
+    filtered_results: list[dict[str, Any]] = []
+    for result in hits:
+      doc = result["fields"]
+      filtered_doc = {key: doc.get(key) for key in fields} if fields else doc
+      filtered_results.append(filtered_doc)
+    return filtered_results
+
   def hybrid_search(
     self,
-    query,
+    query: str,
     namespace: str,
     filters: dict | None = None,
     candidates=10,
@@ -287,19 +328,19 @@ class PineconeService:
         list: The final reranked search results.
 
     """
-    dense_results = self._vector_search(
+    dense_results = self._vector_search_basic(
       query, index_name="nndm-dense", namespace=namespace, limit=candidates, filters=filters
     )
-    sparse_results = self._vector_search(
+    sparse_results = self._vector_search_basic(
       query, index_name="nndm-sparse", namespace=namespace, limit=candidates, filters=filters
     )
     # dedupe results
-    print(f"sparse results: {sparse_results}")
+    # print(f"sparse results: {sparse_results}")
     deduped_results = self._deduplicate(sparse_results, dense_results)
     # rerank results
     reranked_results = self._rerank(query, deduped_results, limit=limit)
 
-    filtered_results = []
+    filtered_results: list[dict[str, Any]] = []
     for result in reranked_results:
       doc = result["document"]
       filtered_doc = {key: doc.get(key) for key in fields} if fields else doc
