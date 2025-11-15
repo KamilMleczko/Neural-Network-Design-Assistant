@@ -6,6 +6,9 @@
 - to copy the behaviour of ```pip install package_name[standard]``` run: \
 ``` uv add package_name --extra standard```
 
+- to run on of the scripts:
+``` uv run python -m scripts.name_of_script ```
+
 # to log in to hugging face (acces tokenizers) run:
 hf auth login
 

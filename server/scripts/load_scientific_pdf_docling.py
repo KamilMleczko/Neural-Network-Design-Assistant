@@ -1,11 +1,5 @@
-import sys
-from pathlib import Path
-
-server_root = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(server_root))
-
 import pandas as pd
-from services.scientific_pdf_loader import ScientificPDFLoader
+from ..services.scientific_pdf_loader import ScientificPDFLoader
 
 # Example usage
 if __name__ == "__main__":
