@@ -6,10 +6,10 @@ import sys
 sys.path.append("../../..")
 from services.pinecone_service import PineconeService
 
-load_dotenv()
+from core.config_loader import settings
 
 # Instantiate the LLM Client once
-LLM_MODEL_NAME = os.getenv("LLM_MODEL_ID", "gpt-4o")
+LLM_MODEL_NAME = settings.LLM_MODEL_ID
 llm = init_chat_model(LLM_MODEL_NAME)
 
 # Instantiate the Vector DB Client once
