@@ -11,9 +11,15 @@ import {
 } from "@nndm/ui/navigation-menu";
 import Link from "next/link";
 import { FaXTwitter } from "react-icons/fa6"; //we react-icons only because Lucide doesn't have X (Twitter) icon
+import { useAuth } from "@/src/providers/auth-provider";
 import { ThemeSwitcher } from "./theme-switcher";
 
 export const Navbar = () => {
+  const { user, signOut } = useAuth();
+  const handleLogout = async () => {
+    await signOut();
+  };
+
   return (
     <div className="sticky top-0 z-50 flex justify-between border-b bg-background">
       <NavigationMenu viewport={false}>
@@ -87,7 +93,12 @@ export const Navbar = () => {
           <NavigationMenuItem>
             <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
             <NavigationMenuContent className="right-0 left-auto">
-              <ul className="grid w-[120px] gap-4">
+              <ul className="grid w-[200px] gap-4">
+                {user && (
+                  <li className="border-b px-2 py-1 text-muted-foreground text-sm">
+                    Signed in as: {user.email}
+                  </li>
+                )}
                 <li>
                   <NavigationMenuLink href="#">
                     <div className="font-medium">Profile Settings</div>
@@ -101,11 +112,25 @@ export const Navbar = () => {
                     <ThemeSwitcher />
                   </div>
                 </li>
-                <li>
-                  <NavigationMenuLink href="#">
-                    <div className="font-medium">Logout</div>
-                  </NavigationMenuLink>
-                </li>
+                {user ? (
+                  <li>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full rounded-sm p-2 text-left hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <div className="font-medium">Logout</div>
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href="/login">
+                        <div className="font-medium">Login</div>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                )}
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>

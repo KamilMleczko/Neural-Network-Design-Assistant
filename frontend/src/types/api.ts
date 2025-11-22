@@ -4,6 +4,77 @@
  */
 
 export interface paths {
+  "/api/v1/auth/create-user": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create User
+     * @description Syncs Supabase user to our database.
+     *
+     *     Frontend calls this after Supabase signup with email verification.
+     *     Email and user ID come from verified JWT token.
+     *     Only username is required from request body.
+     */
+    post: operations["create_user_api_v1_auth_create_user_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/check-email/{email}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Check Email Exists
+     * @description Check if a user with the given email already exists in our database.
+     *
+     *     This endpoint is used before signup to prevent duplicate registrations,
+     *     since Supabase's signUp() doesn't return proper errors for existing users.
+     *
+     *     Returns:
+     *       - exists: boolean indicating if email is already registered
+     *       - message: descriptive message about the result
+     */
+    get: operations["check_email_exists_api_v1_auth_check_email__email__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get Me
+     * @description Get current user info
+     */
+    get: operations["get_me_api_v1_auth_me_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/": {
     parameters: {
       query?: never;
@@ -11,8 +82,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Read Root */
-    get: operations["read_root__get"];
+    /** Root */
+    get: operations["root__get"];
     put?: never;
     post?: never;
     delete?: never;
@@ -24,7 +95,41 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: never;
+  schemas: {
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components["schemas"]["ValidationError"][];
+    };
+    /** UserCreate */
+    UserCreate: {
+      /** Username */
+      username: string;
+    };
+    /** UserRead */
+    UserRead: {
+      /** User Id */
+      user_id: string;
+      /** Email */
+      email: string;
+      /** Username */
+      username: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+    };
+    /** ValidationError */
+    ValidationError: {
+      /** Location */
+      loc: (string | number)[];
+      /** Message */
+      msg: string;
+      /** Error Type */
+      type: string;
+    };
+  };
   responses: never;
   parameters: never;
   requestBodies: never;
@@ -33,7 +138,104 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  read_root__get: {
+  create_user_api_v1_auth_create_user_post: {
+    parameters: {
+      query?: never;
+      header?: {
+        authorization?: string | null;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserCreate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  check_email_exists_api_v1_auth_check_email__email__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        email: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_me_api_v1_auth_me_get: {
+    parameters: {
+      query?: never;
+      header?: {
+        authorization?: string | null;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  root__get: {
     parameters: {
       query?: never;
       header?: never;
@@ -48,7 +250,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": string;
+          "application/json": unknown;
         };
       };
     };
