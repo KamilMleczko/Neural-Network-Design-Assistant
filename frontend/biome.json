@@ -16,7 +16,8 @@
       "!**/postcss.config.mjs",
       "!**/package.json",
       "!**/tsconfig.json",
-      "!**/*.css"
+      "!**/*.css",
+      "!**/public/**"
     ]
   },
   "formatter": {
