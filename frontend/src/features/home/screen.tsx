@@ -1,7 +1,8 @@
 "use client";
 import { rootApi } from "@nndm/api/client";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/src/ui/buttons/button";
+import { Button } from "@/src/ui/button";
+import { Container } from "@/src/ui/custom/container";
 import { Loader } from "@/src/ui/loading-screen";
 export const HomeScreen = () => {
   const { data: backendMessage, isLoading } = useQuery({
@@ -16,15 +17,17 @@ export const HomeScreen = () => {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-center">Welcome to Neural Network Design Assistant</h1>
-      <p className="text-center">
-        Start building your neural network projects with ease. This is your main page.
-      </p>
-      <p className="text-center"> The message from backend is:</p>
-      <Button onClick={() => alert(backendMessage)} variant="default">
-        Click to see the message
-      </Button>
-    </main>
+    <Container>
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <h1 className="text-center">Welcome to Neural Network Design Assistant</h1>
+        <p className="text-center">
+          Start building your neural network projects with ease. This is your main page.
+        </p>
+        <p className="text-center"> The message from backend is:</p>
+        <Button onClick={() => alert(backendMessage)} variant="default">
+          Click to see the message
+        </Button>
+      </main>
+    </Container>
   );
 };
