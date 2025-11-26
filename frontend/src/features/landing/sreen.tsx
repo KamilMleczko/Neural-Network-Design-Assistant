@@ -11,17 +11,16 @@ import { WhoIsThisFor } from "./components/WhoIsThisFor";
 export const LandingScreen = () => {
   return (
     <>
-    <Header />
-    <Container>
-
-      <Hero />
-      <Features />
-      <WhoIsThisFor />
-      <HowItWorks />
-      <SeeItInAction />
-      <Pricing />
-      <Footer />
-    </Container>
+      <Header />
+      <Container>
+        <Hero />
+        <Features />
+        <WhoIsThisFor />
+        <HowItWorks />
+        <SeeItInAction />
+        <Pricing />
+        <Footer />
+      </Container>
     </>
   );
 };
