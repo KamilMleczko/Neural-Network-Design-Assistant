@@ -1,9 +1,9 @@
 "use client";
 import { rootApi } from "@nndm/api/client";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/src/ui/button";
-import { Container } from "@/src/ui/custom/container";
-import { Loader } from "@/src/ui/loading-screen";
+import { Button } from "@nndm/ui/button";
+import { Container } from "@nndm/ui/custom/container";
+import { Loader } from "@nndm/ui/loading-screen";
 export const HomeScreen = () => {
   const { data: backendMessage, isLoading } = useQuery({
     //rename data to backendMessage

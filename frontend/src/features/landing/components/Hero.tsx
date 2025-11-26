@@ -3,6 +3,7 @@ import veilleLogo from "@nndm/assets/veille-logo.svg";
 import { Button } from "@nndm/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 interface HeroProps {
   className?: string;
@@ -53,16 +54,10 @@ export const Hero = ({ className }: HeroProps) => {
                   disabled={isLoading}
                   aria-label="Start your free trial"
                 >
-                  {isLoading ? (
-                    <>
-                      <span className="animate-pulse">Loading...</span>
-                    </>
-                  ) : (
-                    <>
-                      Start Free Trial
-                      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </>
-                  )}
+                <Link href="/app">
+                  Start Free Trial
+                </Link>
+                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
                 <Button
                   size="lg"

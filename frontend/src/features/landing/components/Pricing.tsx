@@ -11,6 +11,7 @@ import {
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useIntersectionObserver } from "../hooks/use-intersection-observer";
+import router from "next/router";
 
 interface PricingTier {
   name: string;
@@ -98,6 +99,11 @@ export const Pricing = ({ className }: PricingProps) => {
   const [isAnnual, setIsAnnual] = useState(false);
 
   const handlePricingClick = (tierName: string) => {
+    if (tierName == "Starter Free Trial") {
+      console.log("clicked");
+      router.push("/app");
+    }
+    console.log(tierName);
     setLoadingStates((prev) => ({ ...prev, [tierName]: true }));
     setTimeout(() => {
       setLoadingStates((prev) => ({ ...prev, [tierName]: false }));

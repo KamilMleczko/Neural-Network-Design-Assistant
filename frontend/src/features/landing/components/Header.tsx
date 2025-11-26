@@ -5,7 +5,7 @@ import { ThemeToggle } from "@nndm/ui/custom/theme-toggle";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@nndm/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import Link from "next/link";
 interface HeaderProps {
   className?: string;
 }
@@ -32,16 +32,15 @@ export const Header = ({ className }: HeaderProps) => {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/60 ${
-        isScrolled ? "shadow-md" : ""
-      } ${className}`}
+      className={`sticky top-0 z-50 bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/60 ${isScrolled ? "shadow-md" : ""
+        } ${className}`}
     >
       <nav className="container mx-auto flex items-center justify-between px-4 py-4">
         <div className="flex items-center">
           {/* Mobile: V logo */}
-          <img src={vLogo} alt="Veille" className="h-8 w-auto md:hidden" />
+          <img src={vLogo.src} alt="Veille" className="h-8 w-auto md:hidden" />
           {/* Desktop: Full Veille logo */}
-          <img src={veilleLogo} alt="Veille" className="hidden h-8 w-auto md:block" />
+          <img src={veilleLogo.src} alt="Veille" className="hidden h-12 w-auto md:block" />
         </div>
         <div className="hidden items-center gap-8 md:flex">
           <button
@@ -63,8 +62,11 @@ export const Header = ({ className }: HeaderProps) => {
             How It Works
           </button>
           <ThemeToggle />
-          <Button variant="default">Start Free Trial</Button>
+          <Button variant="default">
+            <Link href="/app"> Start Free Trial</Link>
+          </Button>
         </div>
+
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -98,13 +100,16 @@ export const Header = ({ className }: HeaderProps) => {
                 >
                   How It Works
                 </button>
+
                 <Button variant="default" className="mt-4 w-full">
-                  Start Free Trial
+                  <Link href="/app" replace > Start Free Trial </Link>
                 </Button>
+
               </div>
             </SheetContent>
           </Sheet>
         </div>
+
       </nav>
     </header>
   );
