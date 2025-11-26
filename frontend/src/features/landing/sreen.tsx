@@ -10,8 +10,10 @@ import { SeeItInAction } from "./components/SeeItInAction";
 import { WhoIsThisFor } from "./components/WhoIsThisFor";
 export const LandingScreen = () => {
   return (
+    <>
+    <Header />
     <Container>
-      <Header />
+
       <Hero />
       <Features />
       <WhoIsThisFor />
@@ -20,5 +22,6 @@ export const LandingScreen = () => {
       <Pricing />
       <Footer />
     </Container>
+    </>
   );
 };
