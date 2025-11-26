@@ -35,8 +35,8 @@ export const Navbar = () => {
                     <NavigationMenuLink href="#" className="flex h-full flex-col gap-2 space-y-5">
                       <div className="font-medium text-lg">AI-Powered Insights</div>
                       <p className="text-muted-foreground text-sm leading-tight">
-                        Discover how our platform combines chat and prediction capabilities to deliver
-                        intelligent, data-driven solutions tailored to your needs.
+                        Discover how our platform combines chat and prediction capabilities to
+                        deliver intelligent, data-driven solutions tailored to your needs.
                       </p>
                     </NavigationMenuLink>
                   </li>
@@ -81,7 +81,6 @@ export const Navbar = () => {
                 <Link href="/chat">Chat</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-
           </NavigationMenuList>
         </NavigationMenu>
 

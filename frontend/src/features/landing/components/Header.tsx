@@ -32,8 +32,9 @@ export const Header = ({ className }: HeaderProps) => {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/60 ${isScrolled ? "shadow-md" : ""
-        } ${className}`}
+      className={`sticky top-0 z-50 bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/60 ${
+        isScrolled ? "shadow-md" : ""
+      } ${className}`}
     >
       <nav className="container mx-auto flex items-center justify-between px-4 py-4">
         <div className="flex items-center">
@@ -102,14 +103,15 @@ export const Header = ({ className }: HeaderProps) => {
                 </button>
 
                 <Button variant="default" className="mt-4 w-full">
-                  <Link href="/app" replace > Start Free Trial </Link>
+                  <Link href="/app" replace>
+                    {" "}
+                    Start Free Trial{" "}
+                  </Link>
                 </Button>
-
               </div>
             </SheetContent>
           </Sheet>
         </div>
-
       </nav>
     </header>
   );

@@ -54,10 +54,8 @@ export const Hero = ({ className }: HeroProps) => {
                   disabled={isLoading}
                   aria-label="Start your free trial"
                 >
-                <Link href="/app">
-                  Start Free Trial
-                </Link>
-                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <Link href="/app">Start Free Trial</Link>
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
                 <Button
                   size="lg"
