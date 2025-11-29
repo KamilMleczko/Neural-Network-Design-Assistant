@@ -12,10 +12,51 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg_pool import AsyncConnectionPool  # this requires psycopg[binary] (v3)
 from psycopg.rows import dict_row
 from core.config_loader import settings
+from ..schemas.user_conversation import UserConversationRead
 
 POSTGRES_URI = settings.SUPABASE_URI
 # Chat router definition
 router = APIRouter(prefix="/chat", tags=["Chat"])
+
+
+@router.get("/conversations", response_model=list[UserConversationRead])
+async def get_conversations(
+  session: SessionDep,
+  current_user: CurrentUser,
+):
+  """
+  Fetch all conversations for the current user.
+  """
+  statement = (
+    select(UserConversation)
+    .where(UserConversation.user_id == current_user.id)
+    .order_by(UserConversation.updated_at.desc())
+  )
+  conversations = session.exec(statement).all()
+  return conversations
+
+
+@router.get("/conversations/{conversation_id}", response_model=list[MessageRead])
+async def get_conversation_messages(
+  conversation_id: int,
+  session: SessionDep,
+  current_user: CurrentUser,
+):
+  """
+  Fetch all messages for a specific conversation.
+  """
+  # Verify conversation exists and belongs to user
+  conversation = session.get(UserConversation, conversation_id)
+  if not conversation:
+    raise HTTPException(status_code=404, detail="Conversation not found")
+  if conversation.user_id != current_user.id:
+    raise HTTPException(status_code=403, detail="Not authorized to access this conversation")
+
+  statement = (
+    select(Message).where(Message.conversation_id == conversation_id).order_by(Message.created_at)
+  )
+  messages = session.exec(statement).all()
+  return messages
 
 
 @router.post("/message", response_model=MessageRead)
