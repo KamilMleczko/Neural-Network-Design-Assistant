@@ -72,7 +72,12 @@ class PineconeService:
           ],  # source_text should be named "embedded_text" to match the field_map in index (both indexes have the same field map)
           # everything after those two fields is treated as metadata
           **{
-            f"{col}": row[col] for col in cols_as_metadata
+            f"{col}": (
+              row[col].strip().replace("\n", " ")
+              if col == "title" and isinstance(row[col], str)
+              else row[col]
+            )
+            for col in cols_as_metadata
           },  # use dictionary unpacking to add metadata fields
         }
         batch_vectors.append(vector)
@@ -123,7 +128,9 @@ class PineconeService:
     for _idx, row in df.iterrows():
       try:
         arxiv_id = row["arxiv_id"]
-        article_title = row["title"]
+        article_title = (
+          row["title"].strip().replace("\n", " ") if isinstance(row["title"], str) else row["title"]
+        )
         pdf_url = cast("str", row["article_url"])
 
         print(f"Processing: {arxiv_id}")
