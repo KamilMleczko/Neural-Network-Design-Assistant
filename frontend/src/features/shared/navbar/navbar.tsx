@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@nndm/ui/custom/theme-toggle";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,7 +13,6 @@ import {
 import Link from "next/link";
 import { FaXTwitter } from "react-icons/fa6"; //we react-icons only because Lucide doesn't have X (Twitter) icon
 import { useAuth } from "@/src/providers/auth-provider";
-import { ThemeToggle } from "@nndm/ui/custom/theme-toggle";
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
