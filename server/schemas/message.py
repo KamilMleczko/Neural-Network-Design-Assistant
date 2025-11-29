@@ -1,11 +1,11 @@
 from sqlmodel import SQLModel
 from datetime import datetime
 from typing import Optional
-from models.message import MessageRole
+from ..models.message import MessageRole
 
 
 class MessageCreate(SQLModel):
-  conversation_id: int
+  conversation_id: int | None = None
   role: MessageRole
   content: str
 

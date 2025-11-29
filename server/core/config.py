@@ -13,6 +13,7 @@ class Settings(BaseSettings):
   OPENAI_API_KEY: str
   HUGGINGFACEHUB_API_TOKEN: str
   LLM_MODEL_ID: str
+  LLM_SIMPLE_MODEL_ID: str
 
   SUPABASE_PASSWORD: str
   SUPABASE_URL: str

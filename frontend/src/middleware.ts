@@ -11,13 +11,10 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getSession();
 
   // Protect certain routes
-  if (
-    request.nextUrl.pathname.startsWith("/chat") ||
-    request.nextUrl.pathname.startsWith("/predict")
-  ) {
+  if (request.nextUrl.pathname.startsWith("/app/chat")) {
     if (!session) {
       // Redirect to login if not authenticated
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/app/login", request.url));
     }
   }
 
@@ -25,5 +22,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/chat/:path*", "/predict/:path*"],
+  matcher: ["/app/chat/:path*"],
 };

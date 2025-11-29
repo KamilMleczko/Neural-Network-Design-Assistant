@@ -75,6 +75,27 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/chat/message": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Chat
+     * @description Send a message to the AI and get a response.
+     *     If conversation_id is not provided, a new conversation is created.
+     */
+    post: operations["chat_api_v1_chat_message_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/": {
     parameters: {
       query?: never;
@@ -101,6 +122,34 @@ export interface components {
       /** Detail */
       detail?: components["schemas"]["ValidationError"][];
     };
+    /** MessageCreate */
+    MessageCreate: {
+      /** Conversation Id */
+      conversation_id?: number | null;
+      role: components["schemas"]["MessageRole"];
+      /** Content */
+      content: string;
+    };
+    /** MessageRead */
+    MessageRead: {
+      /** Id */
+      id: number;
+      /** Conversation Id */
+      conversation_id: number;
+      role: components["schemas"]["MessageRole"];
+      /** Content */
+      content: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+    };
+    /**
+     * MessageRole
+     * @enum {string}
+     */
+    MessageRole: "user" | "assistant" | "system";
     /** UserCreate */
     UserCreate: {
       /** Username */
@@ -222,6 +271,41 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserRead"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  chat_api_v1_chat_message_post: {
+    parameters: {
+      query?: never;
+      header?: {
+        authorization?: string | null;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MessageCreate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageRead"];
         };
       };
       /** @description Validation Error */
