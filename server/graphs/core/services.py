@@ -3,10 +3,8 @@ from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 import sys
 
-sys.path.append("../../..")
-from services.pinecone_service import PineconeService
-
-from core.config_loader import settings
+from ...services.pinecone_service import PineconeService
+from ...core.config_loader import settings
 
 # Instantiate the LLM Client once
 LLM_MODEL_NAME = settings.LLM_MODEL_ID

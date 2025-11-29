@@ -343,6 +343,13 @@ class PineconeService:
     filtered_results: list[dict[str, Any]] = []
     for result in reranked_results:
       doc = result["document"]
+      # Ensure doc is a dict for JSON serialization
+      # VITAL!!! - will brake state saving in db if deleted
+      if hasattr(doc, "to_dict"):
+        doc = doc.to_dict()
+      elif not isinstance(doc, dict):
+        doc = dict(doc)
+
       filtered_doc = {key: doc.get(key) for key in fields} if fields else doc
       filtered_results.append(filtered_doc)
     return filtered_results

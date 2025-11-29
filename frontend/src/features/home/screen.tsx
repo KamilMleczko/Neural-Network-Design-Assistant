@@ -24,7 +24,7 @@ export const HomeScreen = () => {
           Start building your neural network projects with ease. This is your main page.
         </p>
         <p className="text-center"> The message from backend is:</p>
-        <Button onClick={() => alert(backendMessage)} variant="default">
+        <Button onClick={() => alert(backendMessage.message)} variant="default">
           Click to see the message
         </Button>
       </main>

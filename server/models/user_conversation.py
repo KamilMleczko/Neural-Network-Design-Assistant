@@ -1,4 +1,6 @@
 from sqlmodel import Field, SQLModel, Relationship
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime, timezone, UTC
 from typing import Optional, TYPE_CHECKING, cast
 
@@ -28,3 +30,6 @@ class UserConversation(SQLModel, table=True):  # user_conversation
   messages: list["Message"] = Relationship(
     back_populates="conversation", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
   )
+
+  # Langgraph state
+  state: dict = Field(default={}, sa_column=Column(JSONB))

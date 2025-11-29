@@ -78,7 +78,7 @@ export const Navbar = () => {
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link href="/chat">Chat</Link>
+                <Link href="/app/chat">Chat</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -116,7 +116,7 @@ export const Navbar = () => {
                     ) : (
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link href="/login">
+                          <Link href="/app/login">
                             <div className="font-medium">Login</div>
                           </Link>
                         </NavigationMenuLink>
