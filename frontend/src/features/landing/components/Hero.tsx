@@ -2,8 +2,8 @@ import heroImage from "@nndm/assets/hero-neural-network.jpg";
 import veilleLogo from "@nndm/assets/veille-logo.svg";
 import { Button } from "@nndm/ui/button";
 import { ArrowRight, Play } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface HeroProps {
   className?: string;

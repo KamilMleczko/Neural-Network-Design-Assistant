@@ -1,8 +1,8 @@
-import { Button } from "@/src/ui/button";
-import { ScrollArea } from "@/src/ui/scroll-area";
-import { Plus, MessageSquare, PanelLeft } from "lucide-react";
+import { MessageSquare, PanelLeft, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { components } from "@/src/types/api";
+import { Button } from "@/src/ui/button";
+import { ScrollArea } from "@/src/ui/scroll-area";
 
 type UserConversation = components["schemas"]["UserConversationRead"];
 
@@ -29,7 +29,7 @@ export const ChatSidebar = ({
     return (
       <div
         className={cn(
-          "flex flex-col h-full border-r bg-muted/10 items-center py-4 gap-4",
+          "flex h-full flex-col items-center gap-4 border-r bg-muted/10 py-4",
           className,
         )}
       >
@@ -44,8 +44,8 @@ export const ChatSidebar = ({
   }
 
   return (
-    <div className={cn("flex flex-col h-full border-r bg-muted/10", className)}>
-      <div className="flex items-center justify-between p-4 border-b gap-2">
+    <div className={cn("flex h-full flex-col border-r bg-muted/10", className)}>
+      <div className="flex items-center justify-between gap-2 border-b p-4">
         <Button onClick={onNewChat} className="flex-1 justify-start gap-2" variant="default">
           <Plus className="h-4 w-4" />
           New Chat
@@ -63,22 +63,22 @@ export const ChatSidebar = ({
               key={conv.id}
               variant={selectedId === conv.id ? "secondary" : "ghost"}
               className={cn(
-                "justify-start gap-2 h-auto py-3 px-4 w-full text-left font-normal",
-                selectedId === conv.id && "bg-secondary",
+                "h-auto w-full justify-start gap-2 px-4 py-3 text-left font-normal",
+                selectedId === conv.id && "bg-accent text-accent-foreground",
               )}
               onClick={() => onSelect(conv.id)}
             >
               <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="flex flex-col gap-1 overflow-hidden">
-                <span className="truncate text-sm font-medium">{conv.title}</span>
-                <span className="truncate text-xs text-muted-foreground">
+                <span className="truncate font-medium text-sm">{conv.title}</span>
+                <span className="truncate text-muted-foreground text-xs">
                   {new Date(conv.created_at).toLocaleDateString()}
                 </span>
               </div>
             </Button>
           ))}
           {conversations.length === 0 && (
-            <div className="text-center text-sm text-muted-foreground p-4">
+            <div className="p-4 text-center text-muted-foreground text-sm">
               No conversations yet
             </div>
           )}

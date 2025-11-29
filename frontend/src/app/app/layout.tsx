@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+
 //import navbar as client component to avoid hydration errors
 const Navbar = dynamic(
   () => import("@nndm/features/shared/navbar/navbar").then((mod) => mod.Navbar),
