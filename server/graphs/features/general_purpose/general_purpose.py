@@ -18,7 +18,7 @@ def general_response_node(state: State):
     """
   )
   msg_history = state["messages"]
-  recent_history = msg_history[-5:]  # last 5 messages context
+  recent_history = msg_history  # all messages context
   response = llm.invoke([system_prompt] + recent_history)
   return {"messages": [AIMessage(content=response.content)]}
 
