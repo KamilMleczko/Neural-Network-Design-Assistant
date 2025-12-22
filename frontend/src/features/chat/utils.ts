@@ -11,8 +11,8 @@ export const simulateStreaming = (
   content: string,
   onChunk: (currentContent: string) => void,
   onComplete: () => void,
-  chunkSize: number = 5,
-  delay: number = 10,
+  chunkSize: number = 20,
+  delay: number = 2,
 ) => {
   let currentContent = "";
   let i = 0;

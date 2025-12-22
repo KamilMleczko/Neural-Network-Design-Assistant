@@ -20,6 +20,7 @@ class Settings(BaseSettings):
   SUPABASE_API_KEY: str
   SUPABASE_URI: str
   SUPABASE_URI_SESSION_POOLER: str
+  EXA_API_KEY: str
 
   # App
   APP_NAME: str = "nnda"
