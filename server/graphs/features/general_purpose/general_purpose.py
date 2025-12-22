@@ -24,29 +24,54 @@ def general_response_node(state: State):
 
 
 def classify_message_node(state: State):
-  last_message = state["messages"][-1]
+  message_history = state["messages"]
   classifier_llm = llm.with_structured_output(MessageType)  # add structure output to this response
   system_message = SystemMessage(
     content=f"""
       You are an **Expert Message Classifier**.
-      Your sole task is to analyze the user's last message and categorize its content by strictly selecting *one* of the predefined options.
+      Your sole task is to analyze the converstion flow in order to determine what functionality to use next in order to best assist the user.
+      
+      There are 4 possible functionalities to choose from:
+
+      1.Relevant Article Suggestions - User is describing some machine learning problem, or asks directly for suggestions of articles. 
+      
+      2.Article Contents Analysis
+        When to use it:
+        - User is asking specific questions about one or more OF ALREADY SUGGESTED ARTICLES 
+        - User asks you to compare or relate two or more OF ALREADY SUGGESTED ARTICLES 
+        When NOT to use it:
+        - User is asking questions unrelated to contents of articles, or asking questions about article that was not within earlier suggestions.
+        - NEVER use this functionality at the beginning of a conversation, as there are no articles suggested yet.
+      
+      3.Repository Summaries - User is asking for summaries/explanations of code repositories,
+         When to use it:
+          - User is specifically asking about code repositories connected to one of ALREADY SUGGESTED ARTICLES.
+         When NOT to use it:
+          - User is asking about code repositories unrelated to any of the articles suggested earlier.
+          - NEVER use this functionality at the beginning of a conversation, as there are no articles suggested yet.
+
+      4.Other - The user's message does not fit into the above categories. Most often you will use it when user asks you to explain some general ML concept, or asks irrelevant questions.
+      
+      **Behavior Guidelines:**
+      You will be passed full conversation history, most recent user messages is most relevant but take into account prior conversation flow.
       You must use the provided structured output format and **only** output the classification.
       Do not generate any conversational text, explanations, or prose outside of the required output structure.
     """
   )
-  user_message = HumanMessage(content=last_message.content)
 
-  response = classifier_llm.invoke([system_message, user_message])
+  response = classifier_llm.invoke([system_message] +  message_history)
   # print(f"Classified message type: {response.message_type}") # type: ignore
   return {"message_type": response.message_type}  # type: ignore
 
 
 def router(state: State):
   msg_type = state["message_type"]
-  if msg_type == "ml_problem_description":
+  if msg_type == "relevant_article_suggestions":
     return {"next": "transform_query_node_abstract"}
-  if msg_type == "question_about_article":
+  if msg_type == "article_contents_analysis":
     return {"next": "transform_query_node_chunks"}
+  if msg_type == "repository_summaries":
+    return {"next": "infer_repo_urls_node"}
   if msg_type == "other":
     return {"next": "general_response_node"}
   raise ValueError(f"Unknown message type: {msg_type}")

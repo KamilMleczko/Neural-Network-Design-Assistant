@@ -13,3 +13,4 @@ class State(TypedDict):  # main state shared across all nodes
   transformed_query_abstract: str | None  # for searching through article abstracts
   transformed_query_chunks: str | None  # for searching within article by chunks
   formatted_articles_data: str | None
+  article_ids_for_repo_summaries: list[str] | None  # for summarize_repos feature

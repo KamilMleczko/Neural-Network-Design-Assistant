@@ -132,8 +132,9 @@ def format_articles_metadata_node(state: State):
 
     repo_urls = article.get("repo_url_list", [])
     repo_urls_cut = repo_urls[0:3]
+    repo_names = [url.split('/')[-1] for url in repo_urls_cut]
     repo_links = "\n".join(
-      [f"- [Code Repository {j + 1}]({repo})" for j, repo in enumerate(repo_urls_cut)]
+      [f"- [{repo_names[j]}]({repo})" for j, repo in enumerate(repo_urls_cut)]
     )
 
     authors_list = article.get("authors_list", "N/A")
@@ -141,19 +142,18 @@ def format_articles_metadata_node(state: State):
 
     # Build the Markdown string for this article
     article_markdown = (
-      f""
-      f"### {i + 1}. {title} ({year})\n"
-      f"**Authors:** {authors_str}\n"
-      f"**Citations:** {citations:,}\n"
-      f"**Insights**\n{relevance_summary}\n"
-      f"**Source URL:** {url}\n\n"
-      f"\n**Code Repositories:**\n{repo_links}\n"
+      f"### {i + 1}. 📄 {title} ({int(year)}) \n" #type: ignore
+      f"\n**👥 Authors:** {authors_str}\n"
+      f"\n**📊 Citations:** {int(citations)}\n" #type: ignore
+      f"\n**💡 Insight:**\n{relevance_summary}\n"
+      f"\n**🔗 Full Article available at:** {url}\n"
+      f"\n**🛠️ Code Repositories:**\n{repo_links}\n"
     )
 
     markdown_parts.append(article_markdown)
     markdown_parts.append("---")
   markdown_parts.append(
-    "Are you curious about contents of any of these articles or would you like me to suggest some datasets ? Feel free to ask!"
+    "Are you curious about the contents of any of these articles, or would you like me to provide a overview of their implementation across mentioned github repositories? 🛠️"
   )
   full_response = "\n".join(markdown_parts)
   return {"messages": [AIMessage(content=full_response)]}

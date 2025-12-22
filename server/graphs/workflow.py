@@ -17,6 +17,10 @@ from .features.search_in_article.search_in_article import (
   vector_search_chunks_node,
   answer_question_based_on_chunks_node,
 )
+from .features.summarize_repos.summarize_repos import (
+  infer_repo_urls_node,
+  summarize_repo_contents_node,
+)
 
 graph_builder = StateGraph(State)
 # features/general_purpose
@@ -35,6 +39,12 @@ graph_builder.add_node("transform_query_node_chunks", transform_query_node_chunk
 graph_builder.add_node("vector_search_chunks_node", vector_search_chunks_node)
 graph_builder.add_node("answer_question_based_on_chunks_node", answer_question_based_on_chunks_node)
 
+# features/summarize_repos
+graph_builder.add_node("infer_repo_urls_node", infer_repo_urls_node)
+graph_builder.add_node("summarize_repo_contents_node", summarize_repo_contents_node)
+
+
+
 # features/general_purpose
 graph_builder.add_edge(START, "classifier")
 graph_builder.add_edge("classifier", "router")
@@ -44,6 +54,7 @@ graph_builder.add_conditional_edges(
   {
     "transform_query_node_abstract": "transform_query_node_abstract",
     "transform_query_node_chunks": "transform_query_node_chunks",
+    "infer_repo_urls_node": "infer_repo_urls_node",
     "general_response_node": "general_response_node",
   },
 )
@@ -60,9 +71,12 @@ graph_builder.add_edge("transform_query_node_chunks", "vector_search_chunks_node
 graph_builder.add_edge("vector_search_chunks_node", "answer_question_based_on_chunks_node")
 graph_builder.add_edge("answer_question_based_on_chunks_node", END)
 
+# features/summarize_repos
+graph_builder.add_edge("infer_repo_urls_node", "summarize_repo_contents_node")
+graph_builder.add_edge("summarize_repo_contents_node", END)
+
 # Complie graph into runnable object
 graph = graph_builder.compile()
-
 
 def run_chatbot():
   state = {"messages": [], "message_type": None}

@@ -39,7 +39,7 @@ def transform_query_node_chunks(state: State):
   )
   prompt = HumanMessage(
     content=f"""
-  Based on the most recent user messages, determine what information from scientific article(s) the user was seeking in his last question.
+  Based on the message history (especially the last user's message), determine what information from scientific article(s) the user was seeking in his last question.
   Your tasks:
   1. Identify which article(s) from the list below the user may be referring to. One arxiv id per article.
   2.Return a list of "arxiv_id": string, "query": string  objects, one for each relevant article.
@@ -49,9 +49,8 @@ def transform_query_node_chunks(state: State):
 
   """
   )
-  msg_history = state["messages"]
-  recent_history = msg_history[-5:]  # last 5 messages context
-  response = query_transformer_llm.invoke([system_message] + recent_history + [prompt])
+  message_history = state["messages"]
+  response = query_transformer_llm.invoke([system_message] + message_history + [prompt])
   articles_dicts = []
   for article_query in response.article_queries:  # type: ignore
     articles_dicts.append({"arxiv_id": article_query.arxiv_id, "query": article_query.query})
@@ -125,13 +124,12 @@ def answer_question_based_on_chunks_node(state: State):
     
     Response guidelines:
     - Be accurate and concise
-    - Reference section titles and page numbers when citing: "According to Section 3.2 (page 5)..."
+    - Reference section titles and page numbers when citing: "According to Section 3.2 (page 5)..." (use **bold** formatting there)
     - If comparing multiple articles, use clear headings or structure
     - Maintain technical accuracy while being accessible
+    - Use emotes sparingly to enhance clarity and engagement
     """
   )
-  msg_history = state["messages"]
-  # last 5 messages context
   prompt = HumanMessage(
     content=f"""
     Based on the conversation history and the article chunks provided below, answer the user's most recent question.
@@ -158,6 +156,7 @@ def answer_question_based_on_chunks_node(state: State):
     Now answer the user's question based on this information.
     """
   )
+  msg_history = state["messages"]
   recent_history = msg_history[-5:]
   response = llm.invoke([system_prompt] + recent_history + [prompt])
   return {"messages": [AIMessage(content=response.content)]}
