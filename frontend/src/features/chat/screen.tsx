@@ -22,8 +22,6 @@ export const ChatScreen = () => {
 
   const {
     messages,
-    inputValue,
-    setInputValue,
     conversationId,
     conversations,
     isLoadingMessages,
@@ -138,8 +136,6 @@ export const ChatScreen = () => {
         </ScrollArea>
 
         <ChatInput
-          value={inputValue}
-          onChange={setInputValue}
           onSend={handleSendMessage}
           disabled={sendMessageMutation.isPending}
         />

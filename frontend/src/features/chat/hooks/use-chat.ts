@@ -13,7 +13,6 @@ export type Message = {
 export const useChat = () => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState("");
   const [conversationId, setConversationId] = useState<number | null>(null);
 
   //fetch conversations
@@ -64,17 +63,16 @@ export const useChat = () => {
     refetchConversations,
   });
 
-  const handleSendMessage = useCallback(() => {
-    if (!inputValue.trim()) return;
+  const handleSendMessage = useCallback((content: string) => {
+    if (!content.trim()) return;
 
-    const userMessage = inputValue;
-    setInputValue("");
+    const userMessage = content;
 
     //optimistically add user message
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
     sendMessageMutation.mutate(userMessage);
-  }, [inputValue, conversationId, sendMessageMutation]);
+  }, [conversationId, sendMessageMutation]);
 
   const handleNewChat = useCallback(() => {
     setConversationId(null);
@@ -88,8 +86,6 @@ export const useChat = () => {
 
   return {
     messages,
-    inputValue,
-    setInputValue,
     conversationId,
     conversations,
     isLoadingMessages,
