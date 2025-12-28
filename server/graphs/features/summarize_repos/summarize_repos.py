@@ -28,7 +28,6 @@ def summarize_repo_contents_node(state: State):
   # 1. Fetch repository contents
   mentioned_article_ids = state.get("article_ids_for_repo_summaries", None)
   current_articles_metadata = state.get("current_articles_metadata", None)
-  print(f"PIERDOLEEEEEEEEEEEEEEEEEE {mentioned_article_ids}, CIE {current_articles_metadata == None}")
   if current_articles_metadata is None or mentioned_article_ids is None:
     raise ValueError("State is missing required article metadata or mentioned article ids.") 
 
