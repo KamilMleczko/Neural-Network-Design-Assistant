@@ -42,7 +42,7 @@ def transform_query_node_chunks(state: State):
   Based on the message history (especially the last user's message), determine what information from scientific article(s) the user was seeking in his last question.
   Your tasks:
   1. Identify which article(s) from the list below the user may be referring to. One arxiv id per article.
-  2.Return a list of "arxiv_id": string, "query": string  objects, one for each relevant article.
+  2. Return a list of "arxiv_id": string, "query": string  objects, one for each relevant article.
 
   Allowed articles (title + arxiv_id + summary):
   {article_list_str}

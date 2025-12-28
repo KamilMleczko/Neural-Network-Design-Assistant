@@ -44,7 +44,7 @@ export const LoginScreen = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
         <div>Loading...</div>
       </div>
     );
@@ -52,18 +52,20 @@ export const LoginScreen = () => {
 
   if (user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-          <h2 className="mb-6 text-center font-bold text-2xl">Welcome Back!</h2>
-          <p className="mb-4 text-center text-gray-600">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md rounded-lg bg-card p-8 shadow-md border border-border">
+          <h2 className="mb-6 text-center font-bold text-2xl text-card-foreground">
+            Welcome Back!
+          </h2>
+          <p className="mb-4 text-center text-muted-foreground">
             You are already signed in as: <br />
-            <span className="font-medium">{user.email}</span>
+            <span className="font-medium text-foreground">{user.email}</span>
           </p>
-          <p className="mb-6 text-center text-gray-500 text-sm">
+          <p className="mb-6 text-center text-muted-foreground text-sm">
             User ID: <span className="font-mono text-xs">{user.id}</span>
           </p>
           <div className="text-center">
-            <Link href="/" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/" className="font-medium text-primary hover:text-primary/80">
               Go to Homepage
             </Link>
           </div>
@@ -74,13 +76,13 @@ export const LoginScreen = () => {
 
   return (
     <Container>
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-          <h2 className="mb-6 text-center font-bold text-2xl">Sign In</h2>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md rounded-lg bg-card p-8 shadow-md border border-border">
+          <h2 className="mb-6 text-center font-bold text-2xl text-card-foreground">Sign In</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block font-medium text-gray-700 text-sm">
+              <label htmlFor="email" className="block font-medium text-foreground text-sm">
                 Email
               </label>
               <input
@@ -89,13 +91,13 @@ export const LoginScreen = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-ring"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block font-medium text-gray-700 text-sm">
+              <label htmlFor="password" className="block font-medium text-foreground text-sm">
                 Password
               </label>
               <input
@@ -104,7 +106,7 @@ export const LoginScreen = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-ring"
                 placeholder="Enter your password"
               />
             </div>
@@ -112,27 +114,27 @@ export const LoginScreen = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 font-medium text-sm text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+              className="flex w-full justify-center rounded-md border border-transparent bg-primary px-4 py-2 font-medium text-sm text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
           {message && (
-            <div className="mt-4 rounded border border-green-400 bg-green-100 p-3 text-green-700">
+            <div className="mt-4 rounded border border-green-400/50 bg-green-100/10 p-3 text-green-600 dark:text-green-400">
               {message}
             </div>
           )}
 
           {error && (
-            <div className="mt-4 rounded border border-red-400 bg-red-100 p-3 text-red-700">
+            <div className="mt-4 rounded border border-destructive/50 bg-destructive/10 p-3 text-destructive">
               {error}
             </div>
           )}
 
-          <p className="mt-4 text-center text-gray-600 text-sm">
+          <p className="mt-4 text-center text-muted-foreground text-sm">
             Don't have an account?{" "}
-            <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/register" className="font-medium text-primary hover:text-primary/80">
               Sign up
             </Link>
           </p>
