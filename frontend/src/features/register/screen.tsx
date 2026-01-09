@@ -139,7 +139,7 @@ export const RegisterScreen = () => {
 
           <p className="mt-4 text-center text-muted-foreground text-sm">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:text-primary/80">
+            <Link href="/app/login" className="font-medium text-primary hover:text-primary/80">
               Sign in
             </Link>
           </p>

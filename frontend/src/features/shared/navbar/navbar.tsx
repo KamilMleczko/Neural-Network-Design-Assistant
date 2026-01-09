@@ -91,7 +91,7 @@ export const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
                 <NavigationMenuContent className="right-0 left-auto">
-                  <ul className="grid w-[200px] gap-4">
+                  <ul className="grid w-auto min-w-[200px] gap-4">
                     {user && (
                       <li className="border-b px-2 py-1 text-muted-foreground text-sm">
                         Signed in as: {user.email}

@@ -32,7 +32,7 @@ export const LoginScreen = () => {
 
         // Redirect after successful login (optional)
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/app";
         }, 1500);
       }
     } catch (err: any) {
@@ -65,8 +65,8 @@ export const LoginScreen = () => {
             User ID: <span className="font-mono text-xs">{user.id}</span>
           </p>
           <div className="text-center">
-            <Link href="/" className="font-medium text-primary hover:text-primary/80">
-              Go to Homepage
+            <Link href="/app" className="font-medium text-primary hover:text-primary/80">
+              Go to App
             </Link>
           </div>
         </div>
@@ -134,7 +134,7 @@ export const LoginScreen = () => {
 
           <p className="mt-4 text-center text-muted-foreground text-sm">
             Don't have an account?{" "}
-            <Link href="/register" className="font-medium text-primary hover:text-primary/80">
+            <Link href="/app/register" className="font-medium text-primary hover:text-primary/80">
               Sign up
             </Link>
           </p>
