@@ -1,3 +1,7 @@
+<img width="1753" height="845" alt="image" src="https://github.com/user-attachments/assets/4686806f-70d1-4aea-bbb7-968255f5df5d" />
+
+<img width="925" height="817" alt="image" src="https://github.com/user-attachments/assets/ee53209a-01ee-43de-b186-820ce90b76f2" />
+
 ## First, run the frotnend server
 
 ```bash
