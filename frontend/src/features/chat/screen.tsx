@@ -104,7 +104,7 @@ export const ChatScreen = () => {
           <div className="mx-auto flex max-w-5xl flex-col gap-4 p-4">
             {messages.length === 0 && !isLoadingMessages && (
               <div className="mt-20 text-center text-muted-foreground">
-                <h2 className="mb-2 font-bold text-2xl">Welcome to NNDA Chat</h2>
+                <h2 className="mb-2 font-bold text-2xl">Welcome to Veille Chat</h2>
                 <p>Start a conversation with the AI assistant.</p>
               </div>
             )}

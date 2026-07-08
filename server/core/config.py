@@ -15,7 +15,6 @@ class Settings(BaseSettings):
   LLM_MODEL_ID: str
   LLM_SIMPLE_MODEL_ID: str
 
-  SUPABASE_PASSWORD: str
   SUPABASE_URL: str
   SUPABASE_API_KEY: str
   SUPABASE_URI: str
@@ -23,6 +22,6 @@ class Settings(BaseSettings):
   EXA_API_KEY: str
 
   # App
-  APP_NAME: str = "nnda"
+  APP_NAME: str = "Veille"
   ENVIRONMENT: str = "development"
   API_V1_PREFIX: str = "/api/v1"

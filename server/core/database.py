@@ -4,9 +4,6 @@ from sqlmodel import Session, SQLModel, create_engine, text
 from sqlalchemy.exc import OperationalError
 from fastapi import Depends
 from .config_loader import settings
-from ..models.user import User
-from ..models.user_conversation import UserConversation
-from ..models.message import Message
 
 logger = logging.getLogger(__name__)
 
@@ -60,10 +57,6 @@ def create_database_engine():
 
 engine = create_database_engine()
 
-
-def create_db_and_tables():
-  """Create all database tables"""
-  SQLModel.metadata.create_all(engine)
 
 
 def get_session():

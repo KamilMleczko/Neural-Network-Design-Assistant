@@ -1,26 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pinecone import IndexEmbed, Pinecone, ServerlessSpec
 from .core.config_loader import settings
-from .core.database import create_db_and_tables
 from .routers import auth, chat
-from contextlib import asynccontextmanager
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):  # noqa: ARG001
-  # Startup
-  create_db_and_tables()
-  print("✅ Database tables created:")
-  for route in app.routes:
-    print(f"Route: {route.path} [{route.name}]")
-  yield
-
-  # Shutdown
-  print("👋 Shutting down...")
-
-
-app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
+app = FastAPI(title=settings.APP_NAME)
 app.add_middleware(
   CORSMiddleware,
   allow_origins=["http://localhost:3000"],

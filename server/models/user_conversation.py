@@ -1,28 +1,28 @@
-from sqlmodel import Field, SQLModel, Relationship
-from sqlalchemy import Column
+from sqlmodel import Column, Field, SQLModel, Relationship
 from sqlalchemy.dialects.postgresql import JSONB
-from datetime import datetime, timezone, UTC
-from typing import Optional, TYPE_CHECKING, cast
+from datetime import datetime, UTC
+from typing import TYPE_CHECKING
+from uuid import UUID, uuid4
 
-if TYPE_CHECKING:
-  from .user import User
+if TYPE_CHECKING: # recommended way for dealing with circular imports in sql model
+  from .user import User 
   from .message import Message
 
 
 class UserConversation(SQLModel, table=True):  # user_conversation
   # Primary key
-  id: int | None = Field(default=None, primary_key=True)
-  title: str = Field(index=True)
+  id: UUID = Field(default_factory=uuid4, primary_key=True)
+  title: str | None = None
   description: str | None = None
 
   # Foreign keys
-  user_id: str = Field(foreign_key="user.id", index=True)
+  user_id: UUID = Field(foreign_key="user.id",  ondelete="CASCADE", index=True)
 
   # Metadata
-  created_at: datetime = Field(default_factory=lambda: datetime.now(UTC), index=True)
+  created_at: datetime = Field(default_factory=lambda: datetime.now(tz=UTC), index=True)
   updated_at: datetime | None = Field(
-    default_factory=lambda: datetime.now(UTC),
-    sa_column_kwargs={"onupdate": lambda: datetime.now(UTC)},
+    default_factory=lambda: datetime.now(tz=UTC),
+    sa_column_kwargs={"onupdate": lambda: datetime.now(tz=UTC)},
   )
 
   # Relationships
@@ -32,4 +32,4 @@ class UserConversation(SQLModel, table=True):  # user_conversation
   )
 
   # Langgraph state
-  state: dict = Field(default={}, sa_column=Column(JSONB))
+  state: dict = Field(default_factory=dict, sa_column=Column(JSONB))  # Use JSON type for state
